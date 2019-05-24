@@ -39,8 +39,10 @@ void setup() {
 void draw() {
   if (saveFrame ) {
     if (savePDF) {
+      println("Begin record PDF");
       beginRecord(PDF, "saves/"+name+"_vector.pdf");
     } else if (saveSVG){
+      println("Begin record SVG");
       beginRecord(SVG, "saves/"+name+"_vector.svg");
     } else {
       save("saves/"+name+"_screenshot.png");
@@ -52,7 +54,7 @@ void draw() {
     stroke=0.25;
     translate(width/2, height/2);
     scale(1.0, -1.0);
-    background(255);
+    if (!saveSVG) background(255);
     noFill();
     strokeWeight(2*stroke);
     stroke(0);
@@ -61,10 +63,12 @@ void draw() {
       if (!savePDF && ! saveSVG) {
         savePDF=true;
       } if (! saveSVG) {
+        println("End record PDF");
         endRecord(); 
-         savePDF=false;
+        savePDF=false;
         saveSVG=true;
       } else {
+        println("End record SVG");
         endRecord(); 
         saveFrame=false;
         saveSVG=false;

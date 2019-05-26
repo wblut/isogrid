@@ -529,7 +529,6 @@ public abstract class WB_IsoCubeGrid {
 					valmm = get(i - 1, j, k - 1) ? 1 : 0;
 					val0m = get(i, j, k - 1) ? 1 : 0;
 					sum = val00 + valm0 + valmm + val0m;
-					sum = val00 + valm0 + valmm + val0m;
 					if (sum == 1 || sum == 3) {
 						line(retained, x, y, z, x, y + getDY(), z);
 					}

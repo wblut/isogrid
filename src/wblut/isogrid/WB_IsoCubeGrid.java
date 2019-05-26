@@ -82,7 +82,7 @@ public abstract class WB_IsoCubeGrid {
 		this.dy = dY;
 	}
 
-	public void setDw(final double dZ) {
+	public void setDz(final double dZ) {
 		this.dz = dZ;
 	}
 
@@ -693,7 +693,7 @@ public abstract class WB_IsoCubeGrid {
 			JK = K * J;
 			setDx(dX);
 			setDy(dY);
-			setDw(dZ);
+			setDz(dZ);
 			setCenter(new double[] {cx,cy,cz});
 			grid = new boolean[JK * I];
 			clearLimits();
@@ -708,7 +708,7 @@ public abstract class WB_IsoCubeGrid {
 			JK = K * J;
 			setDx(dX);
 			setDy(dY);
-			setDw(dZ);
+			setDz(dZ);
 			setCenter(new double[] {cx,cy,cz});
 			this.grid = grid;
 			clearLimits();

@@ -672,7 +672,11 @@ public abstract class WB_IsoCubeGrid {
 	public void setUk(int uk) {
 		this.uk = uk;
 	}
-
+  
+	
+	public void export(String path) {
+		WB_IsoCubeGridExporter.export(this, path);
+	}
 
 
 

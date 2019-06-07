@@ -75,7 +75,6 @@ public class WB_IsoHexGrid {
 	public void clear() {
 		cells.clear();
 		linesMap.clear();
-		;
 	}
 
 	// "Set" is unconditional and overrides current values
@@ -88,7 +87,7 @@ public class WB_IsoHexGrid {
 			cells.put(key, cell);
 
 		}
-
+		cell.colorIndices[t] = 0;
 		cell.labels[t] = -1;
 		cell.z[t] = -Integer.MAX_VALUE;
 		if (cell.isEmpty())
@@ -149,7 +148,7 @@ public class WB_IsoHexGrid {
 		clearCube(ijk[0], ijk[1], ijk[2]);
 	}
 
-	public void setTriangle(int q, int r, int t, int label) {
+	public void setTriangle(int q, int r, int t, int label, int colorIndex) {
 		long key = getCellHash(q, r);
 		WB_IsoGridCell cell = cells.get(key);
 		if (cell == null) {
@@ -157,14 +156,28 @@ public class WB_IsoHexGrid {
 			cells.put(key, cell);
 		}
 		cell.labels[t] = label;
+		cell.colorIndices[t]=colorIndex;
+	}
+	
+	public void setTriangle(int q, int r, int t, int label) {
+		setTriangle(q,r,t,0);
+	}
+	
+	public void setHex(int q, int r, int colorIndex) {
+		int[] ijk = hexToCube(q, r);
+		setCube(ijk[0], ijk[1], ijk[2],colorIndex);
 	}
 
+
 	public void setHex(int q, int r) {
-		int[] ijk = hexToCube(q, r);
-		setCube(ijk[0], ijk[1], ijk[2]);
+		setHex(q,r,0);
 	}
 
 	public void setCube(int i, int j, int k) {
+		setCube(i,j,k,0);
+	}
+	
+	public void setCube(int i, int j, int k, int colorIndex) {
 		int z = i + j + k;
 		int z3 = z / 3;
 		int ni = i - z3;
@@ -188,24 +201,24 @@ public class WB_IsoHexGrid {
 		switch (layer) {
 		case 0:
 			for (int t = 0; t < 6; t++) {
-				setTriangle(q, r, t, flipped ? flippedTriangleLabels[t] : triangleLabels[t]);
+				setTriangle(q, r, t, flipped ? flippedTriangleLabels[t] : triangleLabels[t],colorIndex);
 			}
 			break;
 		case 1:
-			setTriangle(q + 1, r + 1, 4, flipped ? flippedTriangleLabels[0] : triangleLabels[0]);
-			setTriangle(q + 1, r + 1, 3, flipped ? flippedTriangleLabels[1] : triangleLabels[1]);
-			setTriangle(q - 1, r, 0, flipped ? flippedTriangleLabels[2] : triangleLabels[2]);
-			setTriangle(q - 1, r, 5, flipped ? flippedTriangleLabels[3] : triangleLabels[3]);
-			setTriangle(q, r - 1, 2, flipped ? flippedTriangleLabels[4] : triangleLabels[4]);
-			setTriangle(q, r - 1, 1, flipped ? flippedTriangleLabels[5] : triangleLabels[5]);
+			setTriangle(q + 1, r + 1, 4, flipped ? flippedTriangleLabels[0] : triangleLabels[0],colorIndex);
+			setTriangle(q + 1, r + 1, 3, flipped ? flippedTriangleLabels[1] : triangleLabels[1],colorIndex);
+			setTriangle(q - 1, r, 0, flipped ? flippedTriangleLabels[2] : triangleLabels[2],colorIndex);
+			setTriangle(q - 1, r, 5, flipped ? flippedTriangleLabels[3] : triangleLabels[3],colorIndex);
+			setTriangle(q, r - 1, 2, flipped ? flippedTriangleLabels[4] : triangleLabels[4],colorIndex);
+			setTriangle(q, r - 1, 1, flipped ? flippedTriangleLabels[5] : triangleLabels[5],colorIndex);
 			break;
 		case -1:
-			setTriangle(q + 1, r, 2, flipped ? flippedTriangleLabels[0] : triangleLabels[0]);
-			setTriangle(q, r + 1, 5, flipped ? flippedTriangleLabels[1] : triangleLabels[1]);
-			setTriangle(q, r + 1, 4, flipped ? flippedTriangleLabels[2] : triangleLabels[2]);
-			setTriangle(q - 1, r - 1, 1, flipped ? flippedTriangleLabels[3] : triangleLabels[3]);
-			setTriangle(q - 1, r - 1, 0, flipped ? flippedTriangleLabels[4] : triangleLabels[4]);
-			setTriangle(q + 1, r, 3, flipped ? flippedTriangleLabels[5] : triangleLabels[5]);
+			setTriangle(q + 1, r, 2, flipped ? flippedTriangleLabels[0] : triangleLabels[0],colorIndex);
+			setTriangle(q, r + 1, 5, flipped ? flippedTriangleLabels[1] : triangleLabels[1],colorIndex);
+			setTriangle(q, r + 1, 4, flipped ? flippedTriangleLabels[2] : triangleLabels[2],colorIndex);
+			setTriangle(q - 1, r - 1, 1, flipped ? flippedTriangleLabels[3] : triangleLabels[3],colorIndex);
+			setTriangle(q - 1, r - 1, 0, flipped ? flippedTriangleLabels[4] : triangleLabels[4],colorIndex);
+			setTriangle(q + 1, r, 3, flipped ? flippedTriangleLabels[5] : triangleLabels[5],colorIndex);
 			break;
 		default:
 
@@ -214,7 +227,7 @@ public class WB_IsoHexGrid {
 
 	// "Add" is conditional and only overwrites if its z-value is higher than
 	// current values
-	public void addTriangle(int q, int r, int t, int z, int label) {
+	public void addTriangle(int q, int r, int t, int z, int label, int colorIndex) {
 		long key = getCellHash(q, r);
 		WB_IsoGridCell cell = cells.get(key);
 
@@ -226,16 +239,30 @@ public class WB_IsoHexGrid {
 		if (z > cell.z[t]) {
 			cell.labels[t] = label;
 			cell.z[t] = z;
+			cell.colorIndices[t]=colorIndex;
 		}
 
+	}
+	
+	public void addTriangle(int q, int r, int t, int z, int label) {
+		addTriangle(q,r,t,z,label,0);
+	}
+	
+	public void addHex(int q, int r,int colorIndex) {
+		int[] ijk = hexToCube(q, r);
+		addCube(ijk[0], ijk[1], ijk[2],colorIndex);
 	}
 
 	public void addHex(int q, int r) {
 		int[] ijk = hexToCube(q, r);
-		addCube(ijk[0], ijk[1], ijk[2]);
+		addCube(ijk[0], ijk[1], ijk[2],0);
+	}
+	
+	public void addCube(int i, int j, int k) {
+		addCube(i,j,k,0);
 	}
 
-	public void addCube(int i, int j, int k) {
+	public void addCube(int i, int j, int k, int colorIndex) {
 
 		int z = i + j + k;
 		int z3 = z / 3;
@@ -260,24 +287,24 @@ public class WB_IsoHexGrid {
 		switch (layer) {
 		case 0:
 			for (int t = 0; t < 6; t++) {
-				addTriangle(q, r, t, z, flipped ? flippedTriangleLabels[t] : triangleLabels[t]);
+				addTriangle(q, r, t, z, flipped ? flippedTriangleLabels[t] : triangleLabels[t],colorIndex);
 			}
 			break;
 		case 1:
-			addTriangle(q + 1, r + 1, 4, z, flipped ? flippedTriangleLabels[0] : triangleLabels[0]);
-			addTriangle(q + 1, r + 1, 3, z, flipped ? flippedTriangleLabels[1] : triangleLabels[1]);
-			addTriangle(q - 1, r, 0, z, flipped ? flippedTriangleLabels[2] : triangleLabels[2]);
-			addTriangle(q - 1, r, 5, z, flipped ? flippedTriangleLabels[3] : triangleLabels[3]);
-			addTriangle(q, r - 1, 2, z, flipped ? flippedTriangleLabels[4] : triangleLabels[4]);
-			addTriangle(q, r - 1, 1, z, flipped ? flippedTriangleLabels[5] : triangleLabels[5]);
+			addTriangle(q + 1, r + 1, 4, z, flipped ? flippedTriangleLabels[0] : triangleLabels[0],colorIndex);
+			addTriangle(q + 1, r + 1, 3, z, flipped ? flippedTriangleLabels[1] : triangleLabels[1],colorIndex);
+			addTriangle(q - 1, r, 0, z, flipped ? flippedTriangleLabels[2] : triangleLabels[2],colorIndex);
+			addTriangle(q - 1, r, 5, z, flipped ? flippedTriangleLabels[3] : triangleLabels[3],colorIndex);
+			addTriangle(q, r - 1, 2, z, flipped ? flippedTriangleLabels[4] : triangleLabels[4],colorIndex);
+			addTriangle(q, r - 1, 1, z, flipped ? flippedTriangleLabels[5] : triangleLabels[5],colorIndex);
 			break;
 		case -1:
-			addTriangle(q + 1, r, 2, z, flipped ? flippedTriangleLabels[0] : triangleLabels[0]);
-			addTriangle(q, r + 1, 5, z, flipped ? flippedTriangleLabels[1] : triangleLabels[1]);
-			addTriangle(q, r + 1, 4, z, flipped ? flippedTriangleLabels[2] : triangleLabels[2]);
-			addTriangle(q - 1, r - 1, 1, z, flipped ? flippedTriangleLabels[3] : triangleLabels[3]);
-			addTriangle(q - 1, r - 1, 0, z, flipped ? flippedTriangleLabels[4] : triangleLabels[4]);
-			addTriangle(q + 1, r, 3, z, flipped ? flippedTriangleLabels[5] : triangleLabels[5]);
+			addTriangle(q + 1, r, 2, z, flipped ? flippedTriangleLabels[0] : triangleLabels[0],colorIndex);
+			addTriangle(q, r + 1, 5, z, flipped ? flippedTriangleLabels[1] : triangleLabels[1],colorIndex);
+			addTriangle(q, r + 1, 4, z, flipped ? flippedTriangleLabels[2] : triangleLabels[2],colorIndex);
+			addTriangle(q - 1, r - 1, 1, z, flipped ? flippedTriangleLabels[3] : triangleLabels[3],colorIndex);
+			addTriangle(q - 1, r - 1, 0, z, flipped ? flippedTriangleLabels[4] : triangleLabels[4],colorIndex);
+			addTriangle(q + 1, r, 3, z, flipped ? flippedTriangleLabels[5] : triangleLabels[5],colorIndex);
 			break;
 		default:
 
@@ -382,7 +409,7 @@ public class WB_IsoHexGrid {
 			for (int i = 0; i < 6; i++) {
 				
 				if (cell.labels[i] > -1) {
-					home.fill(colors[cell.labels[i]]);
+					home.fill(colors[3*cell.colorIndices[i]+cell.labels[i]]);
 					home.beginShape(PConstants.TRIANGLES);
 					vertex(home, center[0], center[1]);
 					vertex(home, center[0] + offsets[i][0], center[1] + offsets[i][1]);
@@ -415,7 +442,7 @@ public class WB_IsoHexGrid {
 		return lines;
 	}
 
-	private boolean checkNeighborLabel(int q, int r, int i, int label, int z) {
+	private boolean checkNeighborLabel(int q, int r, int i, int label, int z,int colorIndex) {
 		long nhash = getCellHash(q + neighborHexes[i][0], r + neighborHexes[i][1]);
 		WB_IsoGridCell neighbor = cells.get(nhash);
 		if (neighbor == null) {
@@ -432,7 +459,7 @@ public class WB_IsoHexGrid {
 
 		// If triangles have different label or arent't part of neighboring faces, draw
 		// line
-		return neighbor.labels[neighborTriangles[i]] != label || Math.abs(neighbor.z[neighborTriangles[i]] - z) > 1;
+		return neighbor.labels[neighborTriangles[i]] != label || neighbor.colorIndices[neighborTriangles[i]] != colorIndex || Math.abs(neighbor.z[neighborTriangles[i]] - z) > 1;
 	}
 
 	private boolean hasNeighbor(int q, int r, int i) {
@@ -461,7 +488,7 @@ public class WB_IsoHexGrid {
 			for (int i = 0; i < 6; i++) {
 				if (cell.labels[i] > -1) {
 					if (!hasNeighbor(cell.getQ(), cell.getR(), i)
-							|| checkNeighborLabel(cell.getQ(), cell.getR(), i, cell.labels[i], cell.z[i])) {
+							|| checkNeighborLabel(cell.getQ(), cell.getR(), i, cell.labels[i], cell.z[i],cell.colorIndices[i])) {
 						WB_IsoGridSegment segment = new WB_IsoGridSegment(cell.getQ() + directions[i][0],
 								cell.getR() + directions[i][1], cell.getQ() + directions[(i + 1) % 6][0],
 								cell.getR() + directions[(i + 1) % 6][1]);
@@ -485,7 +512,7 @@ public class WB_IsoHexGrid {
 
 		for (WB_IsoGridCell cell : cells.values()) {
 			for (int i = 0, j = 5; i < 6; j = i, i++) {
-				if (cell.labels[i] != cell.labels[j]) {
+				if (cell.labels[i] != cell.labels[j] || cell.colorIndices[i] != cell.colorIndices[j]) {
 					WB_IsoGridSegment segment = new WB_IsoGridSegment(cell.getQ(), cell.getR(), cell.getQ() + directions[i][0],
 							cell.getR() + directions[i][1]);
 					long key = getLineHash(segment.getType(), segment.getGroupValue());

@@ -123,6 +123,7 @@ void keyPressed() {
       java.util.Date dNow = new java.util.Date( );
       java.text.SimpleDateFormat ft = new java.text.SimpleDateFormat ("yyyy_MM_dd_HHmmss_S");
       name="iso"+"_"+ft.format(dNow);
+      iso.cubes.export(sketchPath("saves/"+name+".obj"));
     } else if (key=='q') {
       iso.refineGrid();
       iso.mapCubeGridToHexGrid();

@@ -25,6 +25,7 @@ public class WB_IsoCubeGridExporter {
 		vertices = new ArrayList<double[]>();
 		faces = new ArrayList<int[]>();
 		int val0, valm, sum;
+		double[] c = grid.getMin();
 		for (int i = grid.getLi(); i <= grid.getUi(); i++) {
 			for (int j = grid.getLj(); j < grid.getUj(); j++) {
 				for (int k = grid.getLk(); k < grid.getUk(); k++) {
@@ -32,8 +33,8 @@ public class WB_IsoCubeGridExporter {
 					valm = grid.get(i - 1, j, k) ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {
-						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices), getVertexIndex(grid, i, j + 1, k,vertexIndices,vertices),
-								getVertexIndex(grid, i, j + 1, k + 1,vertexIndices,vertices), getVertexIndex(grid, i, j, k + 1,vertexIndices,vertices)
+						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices,c), getVertexIndex(grid, i, j + 1, k,vertexIndices,vertices,c),
+								getVertexIndex(grid, i, j + 1, k + 1,vertexIndices,vertices,c), getVertexIndex(grid, i, j, k + 1,vertexIndices,vertices,c)
 
 						});
 					}
@@ -47,8 +48,8 @@ public class WB_IsoCubeGridExporter {
 					valm = grid.get(i, j - 1, k) ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {
-						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices), getVertexIndex(grid, i + 1, j, k,vertexIndices,vertices),
-								getVertexIndex(grid, i + 1, j, k + 1,vertexIndices,vertices), getVertexIndex(grid, i, j, k + 1,vertexIndices,vertices) });
+						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices,c), getVertexIndex(grid, i + 1, j, k,vertexIndices,vertices,c),
+								getVertexIndex(grid, i + 1, j, k + 1,vertexIndices,vertices,c), getVertexIndex(grid, i, j, k + 1,vertexIndices,vertices,c) });
 					}
 				}
 			}
@@ -60,8 +61,8 @@ public class WB_IsoCubeGridExporter {
 					valm = grid.get(i, j, k - 1) ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {
-						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices), getVertexIndex(grid, i + 1, j, k,vertexIndices,vertices),
-								getVertexIndex(grid, i + 1, j + 1, k,vertexIndices,vertices), getVertexIndex(grid, i, j + 1, k,vertexIndices,vertices) });
+						faces.add(new int[] { getVertexIndex(grid, i, j, k,vertexIndices,vertices,c), getVertexIndex(grid, i + 1, j, k,vertexIndices,vertices,c),
+								getVertexIndex(grid, i + 1, j + 1, k,vertexIndices,vertices,c), getVertexIndex(grid, i, j + 1, k,vertexIndices,vertices,c) });
 					}
 				}
 			}
@@ -91,10 +92,10 @@ public class WB_IsoCubeGridExporter {
 
 	}
 
-	private static int getVertexIndex(WB_IsoCubeGrid grid, int i, int j, int k, int[][][] vertexIndices, List<double[]> vertices) {
-		double[] c = grid.getMin();
+	private static int getVertexIndex(WB_IsoCubeGrid grid, int i, int j, int k, int[][][] vertexIndices, List<double[]> vertices,double[] c ) {
+		
 		if (vertexIndices[i][j][k] == -1) {
-			vertexIndices[i][j][k] = vertices.size();
+			vertexIndices[i][j][k] = vertices.size()+1;
 			vertices.add(new double[] { c[0] + i * grid.getDX(), c[1] + j * grid.getDY(), c[2] + k * grid.getDZ() });
 		}
 		return vertexIndices[i][j][k];

@@ -310,7 +310,7 @@ class IsoSystem {
     }
   }
 
-  public void colorGrid(int step, float chance1, float chance2) {
+  public void colorGrid(int step, float chance1) {
     float roll;
     for (int i = 0; i < I; i += step) {
       for (int j = 0; j < J; j += step) {
@@ -318,9 +318,7 @@ class IsoSystem {
           roll=random(100);
           if (roll < chance1 ) {
             colorBlock(i, j, k, step, 1);
-          } else if (roll < chance1 + chance2 ) {
-            colorBlock(i, j, k, step, 2);
-          } else {
+          }  else {
             colorBlock(i, j, k, step, 0);
           }
         }

@@ -20,15 +20,17 @@ void GUI(){
   text("'z': darken", x,y+=dy);
   text("'c': lighten", x,y+=dy);
   text("'g': toggle GUI", x,y+=dy);
-  text("'j': toggle duql render", x,y+=dy);
+  text("'j': toggle dual render", x,y+=dy);
   text("",x,y+=dy);
   text("'1'-'7': random remove blocks of size 128-64-...-2",x,y+=dy);
   text("'8': random remove blocks",x,y+=dy);
   text("'9': maze",x,y+=dy);
   text("'0': perlin noise",x,y+=dy);
-  text("'q': random refine",x,y+=dy);
-  text("'a': Perlin noise subtract",x,y+=dy);
+  text("'/': perlin color noise",x,y+=dy);
+  text("'?': perlin noise",x,y+=dy);
+  
   text("'x': invert",x,y+=dy);
+  
   text("",x,y+=dy);
   text("'R': edge transform",x,y+=dy);
   text("'r': random selection edge transform",x,y+=dy);

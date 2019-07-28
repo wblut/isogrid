@@ -167,9 +167,13 @@ void keyPressed() {
     iso.mapVoxelsToHexGrid(DUAL, mini, maxi, minj, maxj, mink, maxk);    
     operators+="slice K ALL"+System.lineSeparator();
   } else if (key=='/') { 
-    iso.colorNoise(2, 2, 2, 0.06, 0.06, 0.06, 0.3);
+    iso.colorNoise(4, 4, 4, 0.06, 0.06, 0.06, 0.45);
     iso.mapVoxelsToHexGrid(DUAL, mini, maxi, minj, maxj, mink, maxk);
-    operators+="colorNoise 2/2/2/0.06/0.06/0.6/0.3"+System.lineSeparator();
+    operators+="colorNoise 4/4/4/0.06/0.06/0.6/0.45"+System.lineSeparator();
+  } else if (key=='?') { 
+    iso.colorGrid(16, 0.35);
+    iso.mapVoxelsToHexGrid(DUAL, mini, maxi, minj, maxj, mink, maxk);
+    operators+="colorNoise 16/0.35"+System.lineSeparator();
   } else if (key==' ') {
     saveFrame = true;
     java.util.Date dNow = new java.util.Date( );

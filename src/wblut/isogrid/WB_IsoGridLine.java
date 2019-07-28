@@ -6,31 +6,31 @@ import java.util.Comparator;
 import java.util.List;
 
 public class WB_IsoGridLine {
-	private int type; // 0=q, 1=r, 2=-q+r
+	private int type; // 0=q, 1=r, 2=-q+r, 3=q+r, 4=q-2r, 5=-2q+r 
 	private int lineValue;
 	private List<WB_IsoGridSegment> segments;
-
-	WB_IsoGridLine(int type, int value) {
+	
+	protected WB_IsoGridLine(int type, int value) {
 		this.type = type;
 		this.lineValue = value;
 		segments = new ArrayList<WB_IsoGridSegment>();
 	}
 	
-	void add(WB_IsoGridSegment segment) {
-		if(segment.getType()==type && segment.getGroupValue()==lineValue) {
+	protected void add(WB_IsoGridSegment segment) {
+		if(segment.getType()==type && segment.getLineValue()==lineValue) {
 			segments.add(segment);
 		}else {
-			throw new IllegalArgumentException("Segement is type "+segment.getType()+" with value "+segment.getGroupValue()+", and cannot be added to line of type "+type+" with value "+lineValue+".");
+			throw new IllegalArgumentException("Segment is type "+segment.getType()+" with value "+segment.getLineValue()+", and cannot be added to line of type "+type+" with value "+lineValue+".");
 		}
 	}
 	
 
 	
-	void sort() {
+	protected void sort() {
 		segments.sort(new WB_IsoGridSegment.HexSegmentSort());
 	}
 	
-	void optimize() {
+	protected void optimize() {
 		 List<WB_IsoGridSegment> newSegments=new ArrayList<WB_IsoGridSegment>();
 		 WB_IsoGridSegment segi,segj;
 		 for(int i=0;i<segments.size();) {
@@ -76,9 +76,16 @@ public class WB_IsoGridLine {
 		
 	}
 	
+	protected long getHash() {
+		long A = (type >= 0 ? 2 * (long) type : -2 * (long) type - 1);
+		long B = (lineValue >= 0 ? 2 * (long) lineValue : -2 * (long)lineValue - 1);
+		long C = ((A >= B ? A * A + A + B : A + B * B) / 2);
+		return type < 0 && lineValue < 0 || type >= 0 && lineValue >= 0 ? C : -C - 1;
+	}
+	
 
 	
-	static class HexLineSort implements Comparator<WB_IsoGridLine>{
+	static protected class HexLineSort implements Comparator<WB_IsoGridLine>{
 		@Override
 		public int compare(WB_IsoGridLine arg0, WB_IsoGridLine arg1) {
 			if(arg0.type<arg1.type) {
@@ -94,6 +101,6 @@ public class WB_IsoGridLine {
 		}
 	}
 	
-	
+
 
 }

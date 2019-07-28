@@ -711,6 +711,10 @@ public class WB_IsoHexGrid {
 		addFragment(q, r, s, z, label,0,i,j,k);
 
 	}
+	
+	public void addCube(int i, int j, int k) {
+		addCube(i, j, k, 255,0);
+	}
 
 	public void addCube(int i, int j, int k, int state) {
 		addCube(i, j, k, state,0);
@@ -980,6 +984,42 @@ public class WB_IsoHexGrid {
 	public void drawHexCenters(PApplet home) {
 		for (WB_IsoGridCell cell : cells.values()) {
 			drawPoint(home, cell.getQ(), cell.getR());
+		}
+	}
+	
+	public void drawFragments(PApplet home) {
+		double[] center;
+		for (WB_IsoGridCell cell : cells.values()) {
+			center = gridCoordinates(cell.getQ(), cell.getR());
+			for (int f = 0; f < 36; f++) {
+				if (cell.labels[f] > -1 ) {
+					home.beginShape(PConstants.TRIANGLES);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][0]] * size[0], center[1] + offsets[2*fragmentVertices[f][0]+1] * size[1]);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][1]] * size[0], center[1] + offsets[2*fragmentVertices[f][1]+1] * size[1]);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][2]] * size[0], center[1] + offsets[2*fragmentVertices[f][2]+1] * size[1]);
+				
+					home.endShape();
+				}
+			}
+		}
+	}
+
+	public void drawFragments(PApplet home, int[] colors) {
+		double[] center;
+		for (WB_IsoGridCell cell : cells.values()) {
+			center = gridCoordinates(cell.getQ(), cell.getR());
+			for (int f = 0; f < 36; f++) {
+				if (cell.labels[f] > -1  ) {
+					
+					home.fill(colors[10 * cell.colorIndices[f] + cell.labels[f]]);
+					home.beginShape(PConstants.TRIANGLES);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][0]] * size[0], center[1] + offsets[2*fragmentVertices[f][0]+1] * size[1]);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][1]] * size[0], center[1] + offsets[2*fragmentVertices[f][1]+1] * size[1]);
+					vertex(home, center[0] + offsets[2*fragmentVertices[f][2]] * size[0], center[1] + offsets[2*fragmentVertices[f][2]+1] * size[1]);
+				
+					home.endShape();
+				}
+			}
 		}
 	}
 

@@ -10,17 +10,18 @@ public class WB_IsoGridCell {
 	protected int[] cubei;
 	protected int[] cubej;
 	protected int[] cubek;
-	
-	protected WB_IsoGridCell(int q, int r) {
+	private int n;
+	protected WB_IsoGridCell(int q, int r, int numTriangles) {
+		n=numTriangles;
 		this.q = q;
 		this.r = r;
-		labels = new int[36];
-		colorIndices = new int[36];
-		z = new int[36];
-		cubei = new int[36];
-		cubej = new int[36];
-		cubek = new int[36];
-		for (int f = 0; f < 36; f++) {
+		labels = new int[n];
+		colorIndices = new int[n];
+		z = new int[n];
+		cubei = new int[n];
+		cubej = new int[n];
+		cubek = new int[n];
+		for (int f = 0; f < n; f++) {
 			labels[f] = -1;
 			colorIndices[f] = 0;
 			z[f] = -Integer.MAX_VALUE;
@@ -61,7 +62,7 @@ public class WB_IsoGridCell {
 	}
 	
 	public boolean isEmpty() {
-		for (int f = 0; f < 36; f++) {
+		for (int f = 0; f < n; f++) {
 			if (labels[f] > -1)
 				return false;
 		}

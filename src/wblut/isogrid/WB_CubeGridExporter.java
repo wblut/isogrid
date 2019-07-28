@@ -34,9 +34,9 @@ public class WB_CubeGridExporter {
 		for (int i = li; i <= ui; i++) {
 			for (int j = lj; j < uj; j++) {
 				for (int k = lk; k < uk; k++) {
-					index=index(i,j,k,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i,j,k,JK,K,li,ui,lj,uj,lk,uk);
 					val0 =index==-1?0: values[index] ? 1 : 0;
-					index=index(i-1,j,k,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i-1,j,k,JK,K,li,ui,lj,uj,lk,uk);
 					valm = index==-1?0:values[index] ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {
@@ -51,9 +51,9 @@ public class WB_CubeGridExporter {
 		for (int i = li; i < ui; i++) {
 			for (int j = lj; j <= uj; j++) {
 				for (int k = lk; k < uk; k++) {
-					index=index(i,j,k,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i,j,k,JK,K,li,ui,lj,uj,lk,uk);
 					val0 = index==-1?0:values[index] ? 1 : 0;
-					index=index(i,j-1,k,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i,j-1,k,JK,K,li,ui,lj,uj,lk,uk);
 					valm =  index==-1?0:values[index] ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {
@@ -66,9 +66,9 @@ public class WB_CubeGridExporter {
 		for (int i = li; i < ui; i++) {
 			for (int j = lj; j < uj; j++) {
 				for (int k = lk; k <= uk; k++) {
-					index=index(i,j,k,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i,j,k,JK,K,li,ui,lj,uj,lk,uk);
 					val0 =  index==-1?0:values[index] ? 1 : 0;
-					index=index(i,j,k-1,J,JK,li,ui,lj,uj,lk,uk);
+					index=index(i,j,k-1,JK,K,li,ui,lj,uj,lk,uk);
 					valm = index==-1?0: values[index] ? 1 : 0;
 					sum = val0 + valm;
 					if (sum == 1) {

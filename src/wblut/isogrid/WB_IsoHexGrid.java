@@ -587,6 +587,16 @@ public class WB_IsoHexGrid {
 		origin = new double[] { originx, originy };
 		
 	}
+	
+	public double[] getSize() {
+		return size;
+		
+	}
+	
+	public double[] getOrigin() {
+		return origin;
+		
+	}
 
 	public int[] hexToCube(int q, int r) {
 		int i = q;
@@ -691,7 +701,7 @@ public class WB_IsoHexGrid {
 		WB_IsoGridCell cell = cells.get(key);
 
 		if (cell == null) {
-			cell = new WB_IsoGridCell(q, r);
+			cell = new WB_IsoGridCell(q, r,36);
 			cells.put(key, cell);
 
 		}
@@ -773,7 +783,7 @@ public class WB_IsoHexGrid {
 
 	
 
-	public double[] gridCoordinates(double q, double r) {
+	public double[] getGridCoordinates(double q, double r) {
 		return new double[] { q * s60 * size[0] + origin[0], (r - q * c60) * size[1] + origin[1] };
 	}
 
@@ -933,23 +943,31 @@ public class WB_IsoHexGrid {
 
 
 	public void drawPoint(PApplet home, double q, double r) {
-		double[] point = gridCoordinates(q, r);
+		double[] point = getGridCoordinates(q, r);
 		home.point((float) point[0], (float) point[1]);
 	}
 
 	public void drawLine(PApplet home, double q1, double r1, double q2, double r2) {
-		double[] point1 = gridCoordinates(q1, r1);
-		double[] point2 = gridCoordinates(q2, r2);
+		double[] point1 = getGridCoordinates(q1, r1);
+		double[] point2 = getGridCoordinates(q2, r2);
 		home.line((float) point1[0], (float) point1[1],(float) point2[0], (float) point2[1]);
 	}
 
 	public void drawLabel(PApplet home, int q, int r, double dx, double dy) {
-		double[] point = gridCoordinates(q, r);
+		double[] point = getGridCoordinates(q, r);
 		home.text("(" + q + ", " + r + ")", (float) (point[0] + dx), (float) (point[1] + dy));
 	}
 
 	public void drawHex(PApplet home, int q, int r) {
-		double[] center = gridCoordinates(q, r);
+		double[] center = getGridCoordinates(q, r);
+		home.beginShape();
+		for (int i = 0; i < 6; i++) {
+			vertex(home, center[0] + offsets[2*i] * size[0], center[1] + offsets[2*i+1] * size[1]);
+		}
+		home.endShape(PConstants.CLOSE);
+	}
+	
+	public void drawHex(PApplet home, double[] center) {
 		home.beginShape();
 		for (int i = 0; i < 6; i++) {
 			vertex(home, center[0] + offsets[2*i] * size[0], center[1] + offsets[2*i+1] * size[1]);
@@ -958,7 +976,15 @@ public class WB_IsoHexGrid {
 	}
 
 	public void drawTriangle(PApplet home, int q, int r, int t) {
-		double[] center = gridCoordinates(q, r);
+		double[] center = getGridCoordinates(q, r);
+		home.beginShape();
+		vertex(home, center[0], center[1]);
+		vertex(home, center[0] + offsets[2*t] * size[0], center[1] + offsets[2*t+1] * size[1]);
+		vertex(home, center[0] + offsets[2*next[t]] * size[0], center[1] + offsets[2*next[t]+1] * size[1]);
+		home.endShape(PConstants.CLOSE);
+	}
+	
+	public void drawTriangle(PApplet home, double[] center, int t) {
 		home.beginShape();
 		vertex(home, center[0], center[1]);
 		vertex(home, center[0] + offsets[2*t] * size[0], center[1] + offsets[2*t+1] * size[1]);
@@ -967,7 +993,15 @@ public class WB_IsoHexGrid {
 	}
 
 	public void drawFragment(PApplet home, int q, int r, int f) {
-		double[] center = gridCoordinates(q, r);
+		double[] center = getGridCoordinates(q, r);
+		home.beginShape();
+		vertex(home, center[0] + offsets[2*fragmentVertices[f][0]] * size[0], center[1] + offsets[2*fragmentVertices[f][0]+1] * size[1]);
+		vertex(home, center[0] + offsets[2*fragmentVertices[f][1]] * size[0], center[1] + offsets[2*fragmentVertices[f][1]+1] * size[1]);
+		vertex(home, center[0] + offsets[2*fragmentVertices[f][2]] * size[0], center[1] + offsets[2*fragmentVertices[f][2]+1] * size[1]);
+		home.endShape(PConstants.CLOSE);
+	}
+	
+	public void drawFragment(PApplet home, double[] center, int f) {
 		home.beginShape();
 		vertex(home, center[0] + offsets[2*fragmentVertices[f][0]] * size[0], center[1] + offsets[2*fragmentVertices[f][0]+1] * size[1]);
 		vertex(home, center[0] + offsets[2*fragmentVertices[f][1]] * size[0], center[1] + offsets[2*fragmentVertices[f][1]+1] * size[1]);
@@ -990,7 +1024,7 @@ public class WB_IsoHexGrid {
 	public void drawFragments(PApplet home) {
 		double[] center;
 		for (WB_IsoGridCell cell : cells.values()) {
-			center = gridCoordinates(cell.getQ(), cell.getR());
+			center = getGridCoordinates(cell.getQ(), cell.getR());
 			for (int f = 0; f < 36; f++) {
 				if (cell.labels[f] > -1 ) {
 					home.beginShape(PConstants.TRIANGLES);
@@ -1007,7 +1041,7 @@ public class WB_IsoHexGrid {
 	public void drawFragments(PApplet home, int[] colors) {
 		double[] center;
 		for (WB_IsoGridCell cell : cells.values()) {
-			center = gridCoordinates(cell.getQ(), cell.getR());
+			center = getGridCoordinates(cell.getQ(), cell.getR());
 			for (int f = 0; f < 36; f++) {
 				if (cell.labels[f] > -1  ) {
 					
@@ -1026,7 +1060,7 @@ public class WB_IsoHexGrid {
 	public void drawFragments(PApplet home, int zmin, int zmax) {
 		double[] center;
 		for (WB_IsoGridCell cell : cells.values()) {
-			center = gridCoordinates(cell.getQ(), cell.getR());
+			center = getGridCoordinates(cell.getQ(), cell.getR());
 			for (int f = 0; f < 36; f++) {
 				if (cell.labels[f] > -1 && cell.z[f]>=zmin&& cell.z[f]<zmax) {
 					home.beginShape(PConstants.TRIANGLES);
@@ -1043,7 +1077,7 @@ public class WB_IsoHexGrid {
 	public void drawFragments(PApplet home, int[] colors, int zmin, int zmax) {
 		double[] center;
 		for (WB_IsoGridCell cell : cells.values()) {
-			center = gridCoordinates(cell.getQ(), cell.getR());
+			center = getGridCoordinates(cell.getQ(), cell.getR());
 			for (int f = 0; f < 36; f++) {
 				if (cell.labels[f] > -1  && cell.z[f]>=zmin&& cell.z[f]<zmax) {
 					
@@ -1062,7 +1096,7 @@ public class WB_IsoHexGrid {
 	public void drawFragments(PApplet home, int[] colors, int zmin, int zmax, int znear, int zfar,  int mini, int maxi, int minj, int maxj, int mink, int maxk ) {
 		double[] center;
 		for (WB_IsoGridCell cell : cells.values()) {
-			center = gridCoordinates(cell.getQ(), cell.getR());
+			center = getGridCoordinates(cell.getQ(), cell.getR());
 			for (int f = 0; f < 36; f++) {
 				if (cell.labels[f] > -1 && cell.z[f]>=zmin&& cell.z[f]<zmax&&cell.cubei[f]>=mini&&cell.cubei[f]<maxi&&cell.cubej[f]>=minj&&cell.cubej[f]<maxj&&cell.cubek[f]>=mink&&cell.cubek[f]<maxk) {
 					home.fill(color(colors[10 * cell.colorIndices[f] + cell.labels[f]], (cell.colorIndices[f]==0)?cell.z[f]:znear,zfar,znear));
@@ -1100,6 +1134,6 @@ public class WB_IsoHexGrid {
 		 f=Math.min(Math.max(f,0.0),1.0);
 		return 255 << 24 | ((int)Math.round(f*r)) << 16 | ((int)Math.round(f*g))<< 8 |  ((int)Math.round(f*b));
 	}
-	
+
 	
 }
